@@ -1,26 +1,281 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-instrument), ui-serif, Georgia, serif;
+  --font-heading: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+
+  /* Brand */
+  --color-mint: var(--mint);
+  --color-lime: var(--lime);
+  --color-forest: #163a2e;
+  --color-forest-deep: #0f2b22;
+  --color-ink: #0e1a15;
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  --shadow-soft: 0 1px 2px rgb(14 26 21 / 0.04), 0 8px 24px -6px rgb(14 26 21 / 0.08);
+  --shadow-float: 0 2px 4px rgb(14 26 21 / 0.04), 0 24px 64px -12px rgb(14 26 21 / 0.22);
+  --shadow-lift: 0 2px 6px rgb(14 26 21 / 0.05), 0 18px 40px -12px rgb(14 26 21 / 0.18);
+
+  --animate-shimmer: shimmer 1.6s ease-in-out infinite;
+  --animate-float: float 7s ease-in-out infinite;
+  --animate-ken-burns: ken-burns 20s ease-out forwards;
+  --animate-ping-slow: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); }
+    50% { transform: translateY(-12px) rotate(var(--r, 0deg)); }
+  }
+  @keyframes ken-burns {
+    from { transform: scale(1); }
+    to { transform: scale(1.06); }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+:root {
+  --radius: 0.75rem;
+  --background: #f4f2ed;
+  --foreground: #0e1a15;
+  --card: #ffffff;
+  --card-foreground: #0e1a15;
+  --popover: #ffffff;
+  --popover-foreground: #0e1a15;
+  --primary: #163a2e;
+  --primary-hover: #0f2b22;
+  --primary-foreground: #ffffff;
+  --secondary: #e4efe8;
+  --secondary-foreground: #163a2e;
+  --muted: #ebe8e1;
+  --muted-foreground: #5b6660;
+  --accent: #e4efe8;
+  --accent-foreground: #163a2e;
+  --destructive: #c2410c;
+  --border: #e5e2da;
+  --input: #e5e2da;
+  --ring: #163a2e;
+  --mint: #e4efe8;
+  --lime: #7bd389;
+}
+
+.dark {
+  --background: #0b1712;
+  --foreground: #eaf0ec;
+  --card: #12211b;
+  --card-foreground: #eaf0ec;
+  --popover: #12211b;
+  --popover-foreground: #eaf0ec;
+  --primary: #7bd389;
+  --primary-hover: #94e0a0;
+  --primary-foreground: #0b1712;
+  --secondary: #1a2f27;
+  --secondary-foreground: #d7eadc;
+  --muted: #182a22;
+  --muted-foreground: #9aaba2;
+  --accent: #1a2f27;
+  --accent-foreground: #d7eadc;
+  --destructive: #f97316;
+  --border: #233a30;
+  --input: #2a4237;
+  --ring: #7bd389;
+  --mint: #18302a;
+  --lime: #7bd389;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "ss01", "cv11";
+  }
+  ::selection {
+    background: var(--lime);
+    color: #0e1a15;
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+}
+
+@layer utilities {
+  .noise {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .shimmer-bg {
+    background: linear-gradient(90deg, transparent 0%, color-mix(in oklab, var(--lime) 45%, transparent) 50%, transparent 100%);
+    background-size: 200% 100%;
+    animation: var(--animate-shimmer);
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------- Leaflet overrides ---------- */
+.leaflet-container {
+  font-family: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  background: #eef0ec;
+}
+.leaflet-div-icon.lk-marker {
+  background: transparent;
+  border: 0;
+}
+.lk-pin {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transform: translate(-50%, -100%);
+  white-space: nowrap;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #0e1a15;
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  box-shadow: 0 1px 2px rgb(14 26 21 / 0.12), 0 6px 16px -4px rgb(14 26 21 / 0.25);
+  border: 1px solid rgb(14 26 21 / 0.08);
+  transition: transform 160ms ease, background 160ms ease, color 160ms ease;
+  position: relative;
+  cursor: pointer;
+}
+.lk-pin::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -5px;
+  width: 9px;
+  height: 9px;
+  background: inherit;
+  border-right: 1px solid rgb(14 26 21 / 0.08);
+  border-bottom: 1px solid rgb(14 26 21 / 0.08);
+  transform: translateX(-50%) rotate(45deg);
+}
+.lk-pin.is-active {
+  background: #163a2e;
+  color: #ffffff;
+  transform: translate(-50%, -100%) scale(1.12);
+  z-index: 1000;
+}
+.lk-pin.is-fav::before {
+  content: "♥";
+  color: #e5484d;
+  font-size: 10px;
+}
+.lk-cluster {
+  display: grid;
+  place-items: center;
+  transform: translate(-50%, -50%);
+  border-radius: 999px;
+  background: #163a2e;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: 0 0 0 6px rgb(123 211 137 / 0.35), 0 8px 20px -6px rgb(14 26 21 / 0.4);
+  cursor: pointer;
+  transition: transform 160ms ease;
+}
+.lk-cluster:hover {
+  transform: translate(-50%, -50%) scale(1.08);
+}
+.lk-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: #163a2e;
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 6px rgb(123 211 137 / 0.4);
+  transform: translate(-50%, -50%);
+}
+.leaflet-popup.lk-popup .leaflet-popup-content-wrapper {
+  padding: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 18px 40px -12px rgb(14 26 21 / 0.35);
+}
+.leaflet-popup.lk-popup .leaflet-popup-content {
+  margin: 0;
+  width: 240px !important;
+}
+.leaflet-popup.lk-popup a.leaflet-popup-close-button {
+  color: #fff;
+  z-index: 2;
+  top: 6px;
+  right: 6px;
+}
+.leaflet-control-zoom a {
+  border-radius: 10px !important;
+}
+.leaflet-touch .leaflet-bar {
+  border: 0;
+  box-shadow: 0 4px 14px -4px rgb(14 26 21 / 0.25);
+  border-radius: 12px;
+}
+.leaflet-control-attribution {
+  font-size: 10px;
+  border-radius: 8px 0 0 0;
 }
